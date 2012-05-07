@@ -2414,12 +2414,27 @@ int request_smi_region(void *data)
   return 0;
 }
 
+void pmem_request_smi_region(void *data)
+{
+	int bus_id = (int) data;
+
+	msm_bus_scale_client_update_request(bus_id, 1);
+}
+
 int release_smi_region(void *data)
 {
 	int bus_id = (int) data;
 
 	msm_bus_scale_client_update_request(bus_id, 0);
   return 0;
+}
+
+void pmem_release_smi_region(void *data)
+{
+	int bus_id = (int) data;
+
+	msm_bus_scale_client_update_request(bus_id, 0);
+
 }
 
 void *setup_smi_region(void)
@@ -2433,8 +2448,8 @@ static struct android_pmem_platform_data android_pmem_smipool_pdata = {
 	.allocator_type = PMEM_ALLOCATORTYPE_BITMAP,
 	.cached = 0,
 	.memory_type = MEMTYPE_SMI,
-	.request_region = request_smi_region,
-	.release_region = release_smi_region,
+	.request_region = pmem_request_smi_region,
+	.release_region = pmem_release_smi_region,
 	.setup_region = setup_smi_region,
 	.map_on_demand = 1,
 };
